@@ -1,9 +1,9 @@
 const express = require('express');
 const db = require('../data/helpers/projectModel')
 const router = express.Router();
-const actionsRouter = require('./actions')
+// const actionsRouter = require('./actions')
 
-router.use('/:id/actions', actionsRouter)
+// router.use('/:id/actions', actionsRouter)
 router.get('/', (req, res) => {
     db.get()
       .then(projects => {
@@ -62,6 +62,20 @@ router.get('/', (req, res) => {
       res.status(400).json({ errorMessage: "Please Provide Name and description" })
   
   });
-  
+
+  //middleware functions
+function validateProjectId() {
+  return function (req, res, next) {
+    const userId = Number(req.params.user_id)
+    db.get(userId)
+      .then(project => {
+        project ? next() : res.status(400).json({ message: "invalid user id" })
+        
+      })
+      .catch(err => {
+        res.status(500).json({ errorMessage: "could not process request", err })
+      }) 
+  }
+}
   
   module.exports = router;
