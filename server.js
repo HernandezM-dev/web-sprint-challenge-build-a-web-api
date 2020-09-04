@@ -1,14 +1,14 @@
 const express = require('express');
 const helmet = require('helmet');
 const server = express();
-//create Routers for action/projects
+const projectRouter = require('./Routers/Projects')
 
 
 //global Middleware
 server.use(express.json());
 server.use(helmet());
 server.use(logger());
-// server.use('/api/URL', router);
+server.use('/api/projects', projectRouter);
 
 server.get('/', (req, res) => {
   res.send(`<h2>It's Working!!!</h2>`);
