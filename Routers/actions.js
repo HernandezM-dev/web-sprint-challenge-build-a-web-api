@@ -1,26 +1,27 @@
 const express = require('express');
-const db = require('../data/helpers/projectModel')
-const router = express.Router();
-const actionsRouter = require('./actions')
+const db = require('../data/helpers/actionModel');
+const router = express.Router({
+    mergeParams: true,
+});
 
-router.use('/:id/actions', actionsRouter)
 router.get('/', (req, res) => {
+    const id = req.params.id
     db.get()
-      .then(projects => {
-        res.status(200).json(projects)
+      .then(actions => {
+        res.status(200).json(actions)
       })
       .catch(err => {
-        res.status(500).json('cant retrieve projects', err)
+        res.status(500).json('cant retrieve actions')
       })
   });
   router.get('/:id', (req, res) => {
     const id = req.params.id;
     db.get(id)
-    .then(project => {
-      res.status(200).json(project)
+    .then(actions => {
+      res.status(200).json(actions)
     })
     .catch(err => {
-      res.status(500).json('cant retrieve project', err)
+      res.status(500).json('cant retrieve actions', err)
     })
   });
   
@@ -48,7 +49,7 @@ router.get('/', (req, res) => {
   router.put('/:id', (req, res) => {
     const id = req.params.id
     const body = req.body
-    if (body.name && body.description) {
+    if (body.notes && body.description && body.project_id) {
       db.update(id, body)
         .then(updateRes => {
           updateRes !== null
@@ -59,9 +60,8 @@ router.get('/', (req, res) => {
           res.status(500).json({ errorMessage: "unable to process update", err })
         })
     } else
-      res.status(400).json({ errorMessage: "Please Provide Name and description" })
+      res.status(400).json({ errorMessage: "Please Provide Name, Description, Project ID" })
   
   });
-  
-  
-  module.exports = router;
+
+module.exports = router;
